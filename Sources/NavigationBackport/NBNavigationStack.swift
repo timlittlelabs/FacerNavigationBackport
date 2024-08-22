@@ -25,15 +25,15 @@ public struct NBNavigationStack<Root: View, Data: Hashable>: View {
     if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *) {
       NavigationStack(path: $path.path) {
         root
+              .navigationDestination(for: AnyHashable.self, destination: {
+                  let _ = print("📚 Navigation destionation called for AnyHashable.self")
+                  DestinationBuilderView(data: $0)
+              })
+              .navigationDestination(for: LocalDestinationID.self, destination: {
+                  let _ = print("📚 Navigation destionation called for LocalDestinationID.self")
+                  DestinationBuilderView(data: $0)
+              })
       }
-      .navigationDestination(for: AnyHashable.self, destination: {
-          let _ = print("📚 Navigation destionation called for AnyHashable.self")
-          DestinationBuilderView(data: $0)
-      })
-      .navigationDestination(for: LocalDestinationID.self, destination: {
-          let _ = print("📚 Navigation destionation called for LocalDestinationID.self")
-          DestinationBuilderView(data: $0)
-      })
       .environment(\.isWithinNavigationStack, true)
     } else {
       NavigationView {

@@ -8,6 +8,6 @@ public extension View {
   /// - Parameter policy: The policy to use
   /// - Returns: A view with the policy set for all child views via a private environment value.
   func nbUseNavigationStack(_ policy: UseNavigationStackPolicy) -> some View {
-    environment(\.useNavigationStack, policy)
+      environment(\.useNavigationStack, policy)
   }
 }

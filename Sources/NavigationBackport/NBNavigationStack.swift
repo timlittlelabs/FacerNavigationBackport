@@ -8,12 +8,12 @@ public struct NBNavigationStack<Root: View, Data: Hashable>: View {
   @State var internalTypedPath: [Data] = []
   @StateObject var path: NavigationPathHolder
   @StateObject var destinationBuilder = DestinationBuilderHolder()
-  @Environment(\.useNavigationStack) var useNavigationStack
+//  @Environment(\.useNavigationStack) var useNavigationStack
   var root: Root
   var useInternalTypedPath: Bool
 
   var isUsingNavigationView: Bool {
-    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *), useNavigationStack == .whenAvailable {
+    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *) {
       return false
     } else {
       return true
@@ -22,7 +22,7 @@ public struct NBNavigationStack<Root: View, Data: Hashable>: View {
 
   @ViewBuilder
   var content: some View {
-    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *), useNavigationStack == .whenAvailable {
+    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *) {
       NavigationStack(path: $path.path) {
         root
               .navigationDestination(for: AnyHashable.self, destination: {
@@ -59,10 +59,12 @@ public struct NBNavigationStack<Root: View, Data: Hashable>: View {
         // Any others will be pushed one after another with delays.
         path.path = Array(path.path.prefix(1))
         path.withDelaysIfUnsupported(\.path) {
+          print("📚 Doing the navstack push fix")
           $0 = externalTypedPath
         }
       }
       .onChange(of: externalTypedPath) { externalTypedPath in
+        print("📚 externalTypedPath changed")
         guard isUsingNavigationView else {
           path.path = externalTypedPath
           return
@@ -72,6 +74,7 @@ public struct NBNavigationStack<Root: View, Data: Hashable>: View {
         }
       }
       .onChange(of: internalTypedPath) { internalTypedPath in
+        print("📚 internalTypedPath changed")
         guard isUsingNavigationView else {
           path.path = internalTypedPath
           return
@@ -110,6 +113,7 @@ public struct NBNavigationStack<Root: View, Data: Hashable>: View {
     _externalTypedPath = path ?? .constant([])
     self.root = root()
     _path = StateObject(wrappedValue: NavigationPathHolder(path: path?.wrappedValue ?? []))
+    print("📚 Init called, setting internal path type")
     useInternalTypedPath = path == nil
   }
 }

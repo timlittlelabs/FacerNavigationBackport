@@ -28,6 +28,9 @@ public struct NBNavigationStack<Root: View, Data: Hashable>: View {
           .navigationDestination(for: AnyHashable.self, destination: { DestinationBuilderView(data: $0) })
           .navigationDestination(for: LocalDestinationID.self, destination: { DestinationBuilderView(data: $0) })
       }
+      .onAppear {
+          print("🔴 TIM LOG 🔴 TIM LOG 🔴 TIM LOG 🔴 TIM LOG 🔴 TIM LOG")
+      }
       .environment(\.isWithinNavigationStack, true)
     } else {
       NavigationView {

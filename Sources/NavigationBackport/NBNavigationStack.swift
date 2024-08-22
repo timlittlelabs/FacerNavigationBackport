@@ -25,11 +25,14 @@ public struct NBNavigationStack<Root: View, Data: Hashable>: View {
     if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *), useNavigationStack == .whenAvailable {
       NavigationStack(path: $path.path) {
         root
-          .navigationDestination(for: AnyHashable.self, destination: { DestinationBuilderView(data: $0) })
-          .navigationDestination(for: LocalDestinationID.self, destination: { DestinationBuilderView(data: $0) })
-      }
-      .onAppear {
-          print("🔴 TIM LOG 🔴 TIM LOG 🔴 TIM LOG 🔴 TIM LOG 🔴 TIM LOG")
+              .navigationDestination(for: AnyHashable.self, destination: {
+                  let _ = print("📚 Navigation destionation called for AnyHashable.self")
+                  DestinationBuilderView(data: $0)
+              })
+              .navigationDestination(for: LocalDestinationID.self, destination: {
+                  let _ = print("📚 Navigation destionation called for LocalDestinationID.self")
+                  DestinationBuilderView(data: $0)
+              })
       }
       .environment(\.isWithinNavigationStack, true)
     } else {
@@ -78,6 +81,7 @@ public struct NBNavigationStack<Root: View, Data: Hashable>: View {
         }
       }
       .onChange(of: path.path) { path in
+        print("📚 path changed! New path is \(path)")
         if useInternalTypedPath {
           guard path != internalTypedPath.map({ $0 }) else { return }
           internalTypedPath = path.compactMap { anyHashable in
@@ -119,8 +123,14 @@ public extension NBNavigationStack where Data == AnyHashable {
 public extension NBNavigationStack where Data == AnyHashable {
   init(path: Binding<NBNavigationPath>, @ViewBuilder root: () -> Root) {
     let path = Binding(
-      get: { path.wrappedValue.elements },
-      set: { path.wrappedValue.elements = $0 }
+        get: {
+            print("📚 Getting path")
+            return path.wrappedValue.elements
+        },
+        set: {
+            print("📚 Setting path")
+            path.wrappedValue.elements = $0
+        }
     )
     self.init(path: path, root: root)
   }

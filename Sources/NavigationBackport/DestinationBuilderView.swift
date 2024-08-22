@@ -14,6 +14,8 @@ struct DestinationBuilderView<Data: Hashable>: View {
 
 struct DataDependentView<Content: View>: View, Equatable {
   static func ==(lhs: DataDependentView, rhs: DataDependentView) -> Bool {
+      print("📚 Determining equatable: left > \(lhs.data), right > \(rhs.data)")
+      print("📚 Equals = \(lhs.data == rhs.data)")
     return lhs.data == rhs.data
   }
   
